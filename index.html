@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HexaTech Calculator</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d33;--panel2:#1d2944;--text:#eef4ff;--muted:#9caecc;--accent:#5eead4;--danger:#fb7185}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#080c18,#111b31);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif;min-height:100vh}
+.container{max-width:1100px;margin:auto;padding:24px}.header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.brand{font-size:clamp(24px,4vw,38px);font-weight:800}.brand span{color:var(--accent)}.subtitle{color:var(--muted);margin-top:5px}
+button,select,input{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 15px;background:var(--panel2);color:var(--text);transition:.2s}button:hover{filter:brightness(1.2)}button.primary{background:var(--accent);color:#06221f;font-weight:800}button.danger{background:#4b2130;color:#fecdd3}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab.active{background:var(--accent);color:#06221f;font-weight:800}.panel{background:rgba(21,29,51,.94);border:1px solid #2b3a59;border-radius:20px;padding:20px;box-shadow:0 12px 40px #0003}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}label{color:var(--muted);font-size:14px}input,select{width:100%;background:#0b1325;color:var(--text);border:1px solid #354563;border-radius:10px;padding:12px;outline:none}input:focus,select:focus{border-color:var(--accent)}.result{background:#0a1222;border:1px solid #30425f;border-radius:12px;padding:13px;margin-top:10px;word-break:break-all}.result b{color:var(--accent)}.keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px}.keypad button{font-size:18px;font-weight:700;padding:16px}.wide{grid-column:span 2}.section-title{margin-top:0}.muted{color:var(--muted);font-size:14px}.hidden{display:none}.bits{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:15px}.bit{padding:10px 0;text-align:center;border-radius:8px;background:#273650;border:1px solid #40516f}.bit.on{background:var(--accent);color:#06221f;font-weight:800}.history{max-height:260px;overflow:auto}.history-item{padding:10px 0;border-bottom:1px solid #2b3954;font-size:14px}.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px}@media(max-width:750px){.grid{grid-template-columns:1fr}.container{padding:15px}.header{align-items:flex-start;flex-direction:column}.bits{grid-template-columns:repeat(8,1fr);font-size:12px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="header"><div><div class="brand">Hexa<span>Tech</span> Calculator</div><div class="subtitle">Conversor, bitwise e ferramentas para programação e eletrônica</div></div><button id="themeBtn">☀️ Tema</button></header>
+<nav class="tabs">
+<button class="tab active" data-tab="calc">Calculadora</button><button class="tab" data-tab="convert">Conversor</button><button class="tab" data-tab="bitwise">Bitwise</button><button class="tab" data-tab="history">Histórico</button>
+</nav>
+
+<section id="calc" class="panel tabcontent">
+<h2 class="section-title">Calculadora hexadecimal</h2>
+<div class="grid">
+<div><div class="field"><label>Valor hexadecimal</label><input id="hexInput" placeholder="Ex.: FF" autocomplete="off"></div><div class="result">Decimal: <b id="calcDec">0</b><br>Binário: <b id="calcBin">00000000</b></div></div>
+<div><div class="field"><label>Operação</label><select id="op"><option value="+">Adição (+)</option><option value="-">Subtração (-)</option><option value="*">Multiplicação (×)</option><option value="/">Divisão (÷)</option><option value="%">Módulo (%)</option></select></div><div class="field"><label>Segundo valor hexadecimal</label><input id="hexInput2" placeholder="Ex.: 0A" autocomplete="off"></div><button class="primary" id="calculate">Calcular</button><div class="result">Resultado HEX: <b id="calcResult">0</b><br>Resultado DEC: <b id="calcResultDec">0</b></div></div>
+</div>
+<div class="keypad" id="keypad"></div><button class="danger wide" id="clearCalc">Limpar</button>
+</section>
+
+<section id="convert" class="panel tabcontent hidden">
+<h2 class="section-title">Conversor de bases</h2>
+<div class="grid"><div class="field"><label>Base de entrada</label><select id="base"><option value="16">Hexadecimal</option><option value="10">Decimal</option><option value="2">Binário</option><option value="8">Octal</option></select></div><div class="field"><label>Valor</label><input id="convertInput" placeholder="Digite o valor"></div></div>
+<div class="result">HEX: <b id="outHex">—</b></div><div class="result">DEC: <b id="outDec">—</b></div><div class="result">BIN: <b id="outBin">—</b></div><div class="result">OCT: <b id="outOct">—</b></div><button id="copyConvert" class="primary">Copiar resultados</button>
+</section>
+
+<section id="bitwise" class="panel tabcontent hidden">
+<h2 class="section-title">Operações bitwise</h2>
+<div class="grid"><div class="field"><label>Valor A (HEX)</label><input id="a" placeholder="FF"></div><div class="field"><label>Valor B (HEX)</label><input id="b" placeholder="0F"></div><div class="field"><label>Operação</label><select id="bitOp"><option value="AND">AND (&)</option><option value="OR">OR (|)</option><option value="XOR">XOR (^)</option><option value="LS">Deslocar à esquerda</option><option value="RS">Deslocar à direita</option></select></div><div class="field"><label>Deslocamento (para LS/RS)</label><input id="shift" type="number" min="0" max="63" value="1"></div></div>
+<button class="primary" id="bitCalculate">Executar</button><div class="result">Resultado HEX: <b id="bitHex">—</b><br>Resultado DEC: <b id="bitDec">—</b><br>Resultado BIN: <b id="bitBin">—</b></div><div id="bits" class="bits"></div>
+</section>
+
+<section id="history" class="panel tabcontent hidden"><h2 class="section-title">Histórico</h2><div id="historyList" class="history"><div class="muted">Nenhum cálculo ainda.</div></div><button class="danger" id="clearHistory">Apagar histórico</button></section>
+<div class="footer">HexaTech Calculator • Ferramenta educativa • Funciona no navegador</div>
+</div>
+<script>
+const $=id=>document.getElementById(id), historyData=[];
+function valid(s,base){if(!s.trim())throw Error('Digite um valor.');const n=parseInt(s.trim(),base);if(!Number.isFinite(n)||n<0||!/^[0-9a-fA-F]+$/.test(s.trim())&&base===16)throw Error('Valor inválido.');return n}
+function addHistory(text){historyData.unshift(text);renderHistory()}
+function renderHistory(){$('historyList').innerHTML=historyData.length?historyData.map(x=>`<div class="history-item">${x}</div>`).join(''):'<div class="muted">Nenhum cálculo ainda.</div>'}
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tabcontent').forEach(s=>s.classList.add('hidden'));btn.classList.add('active');$(btn.dataset.tab).classList.remove('hidden')});
+const keys='0123456789ABCDEF'.split('');keys.forEach(k=>{const btn=document.createElement('button');btn.textContent=k;btn.onclick=()=>{$('hexInput').value+=k;updatePreview()};$('keypad').appendChild(btn)});
+function updatePreview(){try{const n=valid($('hexInput').value,16);$('calcDec').textContent=n;$('calcBin').textContent=n.toString(2).padStart(8,'0')}catch{$('calcDec').textContent='—';$('calcBin').textContent='—'}}
+$('hexInput').oninput=updatePreview;
+$('calculate').onclick=()=>{try{const x=valid($('hexInput').value,16),y=valid($('hexInput2').value,16);let r;switch($('op').value){case '+':r=x+y;break;case '-':r=x-y;break;case '*':r=x*y;break;case '/':if(y===0)throw Error('Divisão por zero.');r=Math.trunc(x/y);break;case '%':if(y===0)throw Error('Divisão por zero.');r=x%y}if(r<0){$('calcResult').textContent='-'+Math.abs(r).toString(16).toUpperCase();}else $('calcResult').textContent=r.toString(16).toUpperCase();$('calcResultDec').textContent=r;addHistory(`${$('hexInput').value.toUpperCase()} ${$('op').value} ${$('hexInput2').value.toUpperCase()} = ${r.toString(16).toUpperCase()} HEX`)}catch(e){alert(e.message)}};
+$('clearCalc').onclick=()=>{$('hexInput').value='';$('hexInput2').value='';$('calcResult').textContent='0';$('calcResultDec').textContent='0';updatePreview()};
+$('convertInput').oninput=()=>{try{const base=+$('base').value,n=valid($('convertInput').value,base);$('outHex').textContent=n.toString(16).toUpperCase();$('outDec').textContent=n;$('outBin').textContent=n.toString(2);$('outOct').textContent=n.toString(8)}catch{$('outHex').textContent=$('outDec').textContent=$('outBin').textContent=$('outOct').textContent='—'}};
+$('base').onchange=()=>$('convertInput').dispatchEvent(new Event('input'));
+$('copyConvert').onclick=()=>navigator.clipboard?.writeText(`HEX: ${$('outHex').textContent}\nDEC: ${$('outDec').textContent}\nBIN: ${$('outBin').textContent}\nOCT: ${$('outOct').textContent}`);
+$('bitCalculate').onclick=()=>{try{const a=valid($('a').value,16),b=valid($('b').value,16),op=$('bitOp').value,s=Number($('shift').value)||0;let r=op==='AND'?a&b:op==='OR'?a|b:op==='XOR'?a^b:op==='LS'?a<<s:a>>s;r=r>>>0;$('bitHex').textContent=r.toString(16).toUpperCase();$('bitDec').textContent=r;$('bitBin').textContent=r.toString(2).padStart(8,'0');$('bits').innerHTML=$('bitBin').textContent.slice(-8).split('').map((v,i)=>`<div class="bit ${v==='1'?'on':''}">${7-i}<br>${v}</div>`).join('');addHistory(`BITWISE ${$('bitOp').value}: ${r.toString(16).toUpperCase()} HEX`)}catch(e){alert(e.message)}};
+$('clearHistory').onclick=()=>{historyData.length=0;renderHistory()};
+$('themeBtn').onclick=()=>{document.body.style.filter=document.body.style.filter?'':'invert(.9) hue-rotate(180deg)'};
+</script>
+</body>
+</html>
